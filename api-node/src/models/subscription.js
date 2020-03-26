@@ -19,7 +19,6 @@ const subscriptionSchema = new mongoose.Schema({
     },
     organization_name: {
         type: String,
-        required: true,
         trim: true,
     },
     name: {
@@ -161,6 +160,6 @@ const subscriptionSchema = new mongoose.Schema({
  * Alternatively, just use schema.plugin(). The options passed MUST contain the "modelName" key and, optionally,
  * any of the parameters from the configuration section below.
  */
-subscriptionSchema.plugin(MongooseAutoIncrementID.plugin, {modelName: 'Subscription'})
+// subscriptionSchema.plugin(MongooseAutoIncrementID.plugin, {modelName: 'Subscription'})
 
 export default mongoose.model("Subscription", subscriptionSchema)

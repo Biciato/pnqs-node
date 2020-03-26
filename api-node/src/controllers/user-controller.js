@@ -15,9 +15,9 @@ export const UserController = {
             if (!err) {
                 User.findOne({ username }, (err, user) => {
                     if (!err && user) {
-                        let hash = user.password
-                        hash = hash.replace(/^\$2y(.+)$/i, '$2a$1')
-                        if (bcrypt.compareSync(password, hash)) {
+                        const hash = user.password
+                        const Newhash = hash.replace(/^\$2y(.+)$/i, '$2a$1')
+                        if (bcrypt.compareSync(password, hash) || bcrypt.compareSync(password, Newhash)) {
                             // Create a token
                             const payload = { user: user.name }
                             const options = { expiresIn: "2d", issuer: "http://abes-app.org.br" }
