@@ -51,20 +51,21 @@ export const SubscriptionController = {
         mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, err => {
             let result = {}
             if (!err) {
-                Subscription.findOne({ id: req.params.id }, (err, sub) => {
+                Subscription.findOne({ id: parseInt(req.params.id) }, (err, sub) => {
                     if (!err && sub) {
                         const subDepAsync = [1,2,3].map(async (item) => {
+                            console.log(sub, sub.id)
                             let places = []
                             let contacts = []
                             let practices = []
                             if (item === 1) {
-                                return places = await SubscriptionPlace.find({ subscription_id: parseInt(sub.id)})
+                                return places = await SubscriptionPlace.find({ subscription_id: sub.id })
                             }
                             if (item === 2) {
-                                return contacts = await SubscriptionContact.find({ subscription_id: parseInt(sub.id)})
+                                return contacts = await SubscriptionContact.find({ subscription_id: sub.id})
                             }
                             if (item === 3) {
-                                return practices = await SubscriptionPractice.find({ subscription_id: parseInt(sub.id)})
+                                return practices = await SubscriptionPractice.find({ subscription_id: sub.id})
                             }
                         })
                         Promise.all(subDepAsync).then(subs => {
