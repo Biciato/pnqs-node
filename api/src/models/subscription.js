@@ -19,7 +19,6 @@ const subscriptionSchema = new mongoose.Schema({
     },
     organization_name: {
         type: String,
-        trim: true,
     },
     name: {
         type: String,
@@ -29,25 +28,20 @@ const subscriptionSchema = new mongoose.Schema({
     document_id: {
         type: String,
         required: true,
-        trim: true,
     },
     economic_activities: {
         type: String,
         required: true,
-        trim: true,
     },
     economic_activity_start: {
         type: String,
         required: true,
-        trim: true,
     },
     homepage: {
         type: String
     },
     subscription_category_id: {
-        type: String,
-        required: true,
-        trim: true,
+        type: String
     },
     is_autonomous: {
         type: Boolean,
