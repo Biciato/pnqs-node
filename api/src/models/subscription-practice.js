@@ -2,8 +2,7 @@ import mongoose from 'mongoose'
 
 const subscriptionPracticeSchema = new mongoose.Schema({
     id: {
-        type: String,
-        required: true
+        type: String
     },
     practice_category: {
         type: String, 

@@ -483,13 +483,11 @@ export default {
                     message: 'Pedido enviado com sucesso!',
                     type: 'is-success'
                 })
-                this.id = resp.id
+                this.id = resp.message.id
                 this.showAfterRegister = true
             }).catch((error) => {
                 this.isLoading = false
                 alert(error)
-                this.subscription.contacts = []
-                this.subscription.places = []
             })
         },
 		addPractice(practice){

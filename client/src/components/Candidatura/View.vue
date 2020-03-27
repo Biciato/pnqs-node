@@ -634,7 +634,8 @@ export default {
 			name: "",
 			subscription: {
 				places: [],
-				contacts: []
+				contacts: [],
+				practices: []
 			},
 			tablePlaces,
 			isPlacesModalActive: false,

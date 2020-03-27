@@ -2,8 +2,7 @@ import mongoose from 'mongoose'
 
 const subscriptionPlaceSchema = new mongoose.Schema({
     id: {
-        type: String,
-        required: true
+        type: String
     },
     name: {
         type: String,

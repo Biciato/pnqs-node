@@ -2,8 +2,7 @@ import mongoose from 'mongoose'
 
 const subscriptionContactSchema = new mongoose.Schema({
     id: {
-        type: String,
-        required: true
+        type: String
     },
     type: {
         type: String,

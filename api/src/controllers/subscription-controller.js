@@ -15,7 +15,6 @@ export const SubscriptionController = {
             if (!err) {
                 User.findOne({ name: getLoggedUser(req, res).user }, (err, user) => { 
                     if (user) {
-                        console.log(user, user.is_admin)
                         const criteria = user.is_admin 
                                             ? { removed: false } 
                                             : { user_id: user.id, removed: false }
@@ -52,24 +51,23 @@ export const SubscriptionController = {
         mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, err => {
             let result = {}
             if (!err) {
-                Subscription.findById(req.params.id, (err, sub) => {
+                Subscription.findOne({ id: req.params.id }, (err, sub) => {
                     if (!err && sub) {
                         const subDepAsync = [1,2,3].map(async (item) => {
                             let places = []
                             let contacts = []
                             let practices = []
                             if (item === 1) {
-                                return places = await SubscriptionPlace.find({ subscription_id: parseInt(sub._id)})
+                                return places = await SubscriptionPlace.find({ subscription_id: parseInt(sub.id)})
                             }
                             if (item === 2) {
-                                return contacts = await SubscriptionContact.find({ subscription_id: parseInt(sub._id)})
+                                return contacts = await SubscriptionContact.find({ subscription_id: parseInt(sub.id)})
                             }
                             if (item === 3) {
-                                return practices = await SubscriptionPractice.find({ subscription_id: parseInt(sub._id)})
+                                return practices = await SubscriptionPractice.find({ subscription_id: parseInt(sub.id)})
                             }
                         })
                         Promise.all(subDepAsync).then(subs => {
-                            console.log(subs)
                             result.status = 200
                             result.result = {
                                 ...sub._doc,
@@ -95,7 +93,7 @@ export const SubscriptionController = {
         mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, err => {
             let result = {}
             if (!err) {
-                User.findOne({'name': getLoggedUser(req, res).user.name }, (err, user) => {
+                User.findOne({'name': getLoggedUser(req, res).user }, (err, user) => {
                     const subscription = new Subscription({
                         user_id: user.id,
                         tema_igs: req.body.tema_igs,
@@ -133,7 +131,7 @@ export const SubscriptionController = {
                     }) 
                     subscription.save((err, subscription) => {
                         if (!err) {
-                            req.body.subscription_places.forEach(item => {
+                            req.body.places.forEach(item => {
                                 const subscriptionPlace = new SubscriptionPlace({
                                     name: item.name ,
                                     zipcode: item.zipcode ,
@@ -144,14 +142,14 @@ export const SubscriptionController = {
                                     number: item.number ,
                                     complement: item.complement || null,
                                     persons_qtd: item.persons_qtd ,
-                                    subscription_id: subscription._id ,
+                                    subscription_id: subscription.id ,
                                 })
                                 subscriptionPlace.save((err) => {
                                     result.error = err
                                 })
                             })
-                            if (req.body.subscription_contacts.length > 0) {
-                                req.body.subscription_contacts.forEach(item => {
+                            if (req.body.contacts.length > 0) {
+                                req.body.contacts.forEach(item => {
                                     const subscriptionContact = new SubscriptionContact({
                                         type: item.type ,
                                         name: item.name ,
@@ -164,8 +162,8 @@ export const SubscriptionController = {
                                     })
                                 })
                             }
-                            if (req.body.subscription_practices.length > 0) {
-                                req.body.subscription_practices.forEach(item => {
+                            if (req.body.practices.length > 0) {
+                                req.body.practices.forEach(item => {
                                     const subscriptionPractice = new SubscriptionPractice({
                                         practice_category: item.practice_category,
                                         subgroup_id:item.subgroup_id,

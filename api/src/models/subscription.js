@@ -1,10 +1,10 @@
 import mongoose from "mongoose"
 import {MongooseAutoIncrementID} from 'mongoose-auto-increment-reworked'
-
+ 
 // Subscription Columns
 const subscriptionSchema = new mongoose.Schema({
     id: {
-        type: String,
+        type: Number,
         required: true
     },
     user_id: {
@@ -160,6 +160,6 @@ const subscriptionSchema = new mongoose.Schema({
  * Alternatively, just use schema.plugin(). The options passed MUST contain the "modelName" key and, optionally,
  * any of the parameters from the configuration section below.
  */
-// subscriptionSchema.plugin(MongooseAutoIncrementID.plugin, {modelName: 'Subscription'})
+subscriptionSchema.plugin(MongooseAutoIncrementID.plugin, { modelName: 'Subscription', field: 'id' })
 
 export default mongoose.model("Subscription", subscriptionSchema)
