@@ -42,8 +42,8 @@
                                         </b-datepicker>
                                         <span style="color: red">{{ errors[0] }}</span>
                                     </ValidationProvider>
-                                    <p class="help is-danger">Serão válidas as práticas implementadas a partir de 2017.</p>
                                 </b-field>
+                                <p class="help is-danger">Serão válidas as práticas implementadas a partir de 2017.</p>
                             </div>
                         </div>
                         <div class="columns">

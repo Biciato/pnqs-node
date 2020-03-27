@@ -6,31 +6,41 @@ import SubscriptionPractice from "../models/subscription-practice"
 import SubscriptionCategory from "../models/subscription-category"
 import User from "../models/user"
 import propOr from 'ramda/src/propOr'
-import jwt from "jsonwebtoken";
+import { getLoggedUser } from '../utils'
 
 export const SubscriptionController = {
     index: (req, res) => {
         mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, err => {
             let result = {}
             if (!err) {
-                Subscription.find((err, subscriptions) => {
-                    if (!err) {
-                        // mapping subs because it needs to add category object
-                        const subscriptionsMap = subscriptions.map(async (sub) => {
-                            let cat = await SubscriptionCategory.findOne({ _id: parseInt(sub.subscription_category_id)})
-                            return ({ ...sub._doc, category: cat })
+                User.findOne({ name: getLoggedUser(req, res).user }, (err, user) => { 
+                    if (user) {
+                        console.log(user, user.is_admin)
+                        const criteria = user.is_admin 
+                                            ? { removed: false } 
+                                            : { user_id: user.id, removed: false }
+                        Subscription.find(criteria, (err, subscriptions) => {
+                            if (!err) {
+                                // mapping subs because it needs to add category object
+                                const subscriptionsMap = subscriptions.map(async (sub) => {
+                                    let cat = await SubscriptionCategory.findOne({ _id: parseInt(sub.subscription_category_id)})
+                                    return ({ ...sub._doc, category: cat })
+                                })
+                                Promise.all(subscriptionsMap).then(subs => {
+                                    result.status = 200
+                                    result.result = subs
+                                    res.status(200).send(result)
+                                })                        
+                            } else {
+                                result.status = 404
+                                result.error = err
+                                res.status(404).send(result)
+                            }
                         })
-                        Promise.all(subscriptionsMap).then(subs => {
-                            result.status = 200
-                            result.result = subs
-                            res.status(200).send(result)
-                        })                        
                     } else {
-                        result.status = 404
-                        result.error = err
-                        res.status(404).send(result)
+                        res.status(500).send({ status: 500, result: 'Error'})
                     }
-                })
+                })                
             } else {
                 result.status = 500
                 result.error = err
@@ -85,13 +95,7 @@ export const SubscriptionController = {
         mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, err => {
             let result = {}
             if (!err) {
-                const token = req.headers.authorization.split(" ")[1]
-                const options = {
-                    expiresIn: "2d",
-                    issuer: "http://abes-app.org.br",
-                }
-                const user = jwt.verify(token, process.env.JWT_SECRET, options)
-                User.findOne({'name': user.user }, (err, user) => {
+                User.findOne({'name': getLoggedUser(req, res).user.name }, (err, user) => {
                     const subscription = new Subscription({
                         user_id: user.id,
                         tema_igs: req.body.tema_igs,
@@ -194,6 +198,23 @@ export const SubscriptionController = {
                 result.status = 500
                 result.error = err
                 res.status(result.status).send(result)
+            }
+        }),
+    delete: (req, res) =>
+        mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true }, err => {
+            if (!err) {
+                Subscription.findOne({ id: req.params.id }, (err, sub) => {
+                    if (!err && sub) {
+                        sub.removed = true
+                        sub.save(err => {
+                            if (err) {
+                                res.status(500).send({ status: 500, message: err })
+                            } else {
+                                res.status(200).send({ status: 200, message: 'Cadastro excluído com sucesso' })
+                            }
+                        })
+                    }
+                })
             }
         })
 }
