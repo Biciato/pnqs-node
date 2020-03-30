@@ -21,7 +21,11 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
  
 Vue.config.productionTip = false
 
-ApiService.init('http://abes-app.org.br:9999')
+const baseUrl = process.env.NODE_ENV === 'production'
+                  ? 'http://abes-app.org.br:9999'
+                  : 'http://localhost:9000'
+
+ApiService.init(baseUrl)
 
 // If token exists set header
 if (TokenService.getToken()) {
