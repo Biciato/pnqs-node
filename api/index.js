@@ -26,6 +26,6 @@ if (env !== 'production') {
  
 routes(app)
  
-app.listen(`${stage.port}`, 'localhost', () => console.log(`you are server is running on ${stage.port}`))
+app.listen(`${stage.port}`, stage.domain, () => console.log(`you are server is running on ${stage.port}`))
 
 export default app
