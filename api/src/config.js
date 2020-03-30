@@ -1,5 +1,8 @@
 export const config = {
-    development: {
+    production: {
         port: process.env.PORT || 9000
     },
+    development: {
+        port: process.env.PORT || 9000
+    }
 };

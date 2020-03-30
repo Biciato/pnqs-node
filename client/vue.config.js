@@ -1,4 +1,4 @@
 module.exports = {
-  publicPath: './'
+  publicPath: '/teste2/client/dist'
 }
 
